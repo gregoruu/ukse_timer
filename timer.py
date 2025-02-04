@@ -66,9 +66,9 @@ class DualTimerApp:
                         self.previous_preset()
                     elif key_event.keycode == 'KEY_RIGHT':
                         self.next_preset()
-                    elif key_event.keycode == 'KEY_OK':
+                    elif key_event.keycode == 'KEY_ENTER':
                         self.pause_resume_timer2()
-                    elif key_event.keycode == 'KEY_BACK':
+                    elif key_event.keycode == 'KEY_ESC':
                         self.reset_timers()
 
     def previous_preset(self):
@@ -173,6 +173,6 @@ class DualTimerApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    device_path = '/dev/input/event0'  #Device path
+    device_path = '/dev/input/event6'
     app = DualTimerApp(root, device_path)
     root.mainloop()
