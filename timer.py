@@ -2,10 +2,10 @@ import tkinter as tk
 from time import sleep, time
 import threading
 import pygame
-from evdev import InputDevice, categorize, ecodes
+from evdev import InputDevice, categorize, ecodes, list_devices
 
 class DualTimerApp:
-    def __init__(self, root, device_path):
+    def __init__(self, root, device_name):
         self.root = root
         self.root.title("Dual Timer")
         
@@ -19,30 +19,27 @@ class DualTimerApp:
         self.timer2_min_value = None
         self.countdown = False
         self.presets = [
-            (15*60, 3*60),
-            (20*60, 5*60),
-            (30*60, 10*60),
-            (35*60, 15*60),
-            (40*60, 20*60),
-            (15*60, 3*60, True),
-            (20*60, 5*60, True),
-            (30*60, 10*60, True),
-            (35*60, 15*60, True),
-            (40*60, 20*60, True)
+            (15*60, 3*60, "RC 2 UP"),
+            (20*60, 5*60, "RC 3 UP"),
+            (30*60, 10*60, "RC 4 UP"),
+            (35*60, 15*60, "RC 5 UP"),
+            (40*60, 20*60, "RC 6 UP"),
+            (15*60, 3*60, True, "RC 2 DOWN"),
+            (20*60, 5*60, True, "RC 3 DOWN"),
+            (30*60, 10*60, True, "RC 4 DOWN"),
+            (35*60, 15*60, True, "RC 5 DOWN"),
+            (40*60, 20*60, True, "RC 6 DOWN")
         ]
         self.current_preset_index = 0
-        self.root.geometry("300x400")
-        self.label1 = tk.Label(root, text="00:00", font=("Arial", 14))
-        self.label1.pack()
+        self.root.attributes("-fullscreen", True)
+        self.label1 = tk.Label(root, text="00:00", font=("Arial", 48))
+        self.label1.pack(pady=20)
         
-        self.label2 = tk.Label(root, text="00:00", font=("Arial", 14))
-        self.label2.pack()
+        self.label2 = tk.Label(root, text="00:00", font=("Arial", 48))
+        self.label2.pack(pady=20)
         
-        self.reset_button = tk.Button(root, text="Reset", command=self.reset_timers)
-        self.reset_button.pack()
-        
-        self.start_pause_button = tk.Button(root, text="Start/Pause", command=self.pause_resume_timer2)
-        self.start_pause_button.pack()
+        self.preset_label = tk.Label(root, text="", font=("Arial", 24), anchor="w")
+        self.preset_label.pack(fill="x", pady=10)
         
         self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
         self.timer2_thread = threading.Thread(target=self.run_timer2, daemon=True)
@@ -51,12 +48,20 @@ class DualTimerApp:
 
         pygame.mixer.init()
 
-        self.device = InputDevice(device_path)
-        self.input_thread = threading.Thread(target=self.read_input, daemon=True)
-        self.input_thread.start()
+        self.device = self.find_device(device_name)
+        if self.device:
+            self.input_thread = threading.Thread(target=self.read_input, daemon=True)
+            self.input_thread.start()
 
         self.set_preset(*self.presets[self.current_preset_index])
 
+    def find_device(self, device_name):
+        for path in list_devices():
+            device = InputDevice(path)
+            if device_name in device.name:
+                return InputDevice(path)
+        return None
+    
     def read_input(self):
         for event in self.device.read_loop():
             if event.type == ecodes.EV_KEY:
@@ -90,9 +95,11 @@ class DualTimerApp:
             if not self.timer2_paused:
                 self.timer2_last_time = time()
 
-    def set_preset(self, timer1_value, timer2_value, countdown=False):
-        self.countdown = countdown
-        if countdown:
+    def set_preset(self, timer1_value, timer2_value, *args):
+        self.countdown = args[0] if len(args) > 0 and isinstance(args[0], bool) else False
+        preset_name = args[1] if len(args) > 1 else ""
+        self.preset_label.config(text=preset_name)
+        if self.countdown:
             self.timer1_value = timer1_value
             self.timer2_value = timer2_value
         else:
@@ -173,6 +180,6 @@ class DualTimerApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    device_path = '/dev/input/event6'
-    app = DualTimerApp(root, device_path)
+    device_name = "000001 KbMouse"  # seadme nimi
+    app = DualTimerApp(root, device_name)
     root.mainloop()
