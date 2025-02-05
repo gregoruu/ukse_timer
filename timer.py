@@ -33,13 +33,10 @@ class DualTimerApp:
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
         self.label1 = tk.Label(root, text="00:00", font=("Arial", 200))
-        self.label1.pack(pady=20, padx=10)
         
         self.label2 = tk.Label(root, text="00:00", font=("Arial", 200))
-        self.label2.pack(pady=20, padx=10)
         
         self.preset_label = tk.Label(root, text="", font=("Arial", 40), anchor="w")
-        self.preset_label.pack(fill="x", pady=10, padx=10)
         
         self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
         self.timer2_thread = threading.Thread(target=self.run_timer2, daemon=True)
