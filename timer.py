@@ -32,14 +32,14 @@ class DualTimerApp:
         ]
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
-        self.label1 = tk.Label(root, text="00:00", font=("Arial", 48))
-        self.label1.pack(pady=20)
+        self.label1 = tk.Label(root, text="00:00", font=("Arial", 400))
+        self.label1.pack(pady=40)
         
-        self.label2 = tk.Label(root, text="00:00", font=("Arial", 48))
-        self.label2.pack(pady=20)
+        self.label2 = tk.Label(root, text="00:00", font=("Arial", 400))
+        self.label2.pack(pady=40)
         
-        self.preset_label = tk.Label(root, text="", font=("Arial", 24), anchor="w")
-        self.preset_label.pack(fill="x", pady=10)
+        self.preset_label = tk.Label(root, text="", font=("Arial", 128), anchor="w")
+        self.preset_label.pack(fill="x", pady=20)
         
         self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
         self.timer2_thread = threading.Thread(target=self.run_timer2, daemon=True)
@@ -180,6 +180,6 @@ class DualTimerApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    device_name = "000001 KbMouse"  # seadme nimi
+    device_name = "000001 KbMouse"
     app = DualTimerApp(root, device_name)
     root.mainloop()
