@@ -32,19 +32,18 @@ class DualTimerApp:
         ]
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
-        self.label1 = tk.Label(root, text="00:00", font=("Arial", 150))
-        self.label1.pack(pady=20, padx=10)
-        
-        self.label2 = tk.Label(root, text="00:00", font=("Arial", 150))
-        self.label2.pack(pady=20, padx=10)
-        
-        self.preset_label = tk.Label(root, text="", font=("Arial", 40), anchor="w")
-        self.preset_label.pack(fill="x", pady=10, padx=10)
-        
-        self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
-        self.timer2_thread = threading.Thread(target=self.run_timer2, daemon=True)
-        self.timer1_thread.start()
-        self.timer2_thread.start()
+
+        self.container = tk.Frame(root)
+        self.container.pack(fill="both", expand=True)
+
+        self.preset_label = tk.Label(self.container, text="", font=("Arial", 80), anchor="w")
+        self.preset_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
+
+        self.label1 = tk.Label(self.container, text="00:00", font=("Arial", 300))
+        self.label1.grid(row=0, column=1, padx=20, pady=10)
+
+        self.label2 = tk.Label(self.container, text="00:00", font=("Arial", 300))
+        self.label2.grid(row=1, column=1, padx=20, pady=10)
 
         pygame.mixer.init()
 
@@ -61,43 +60,10 @@ class DualTimerApp:
             if device_name in device.name:
                 return InputDevice(path)
         return None
-    
-    def read_input(self):
-        for event in self.device.read_loop():
-            if event.type == ecodes.EV_KEY:
-                key_event = categorize(event)
-                if key_event.keystate == key_event.key_down:
-                    if key_event.keycode == 'KEY_LEFT':
-                        self.previous_preset()
-                    elif key_event.keycode == 'KEY_RIGHT':
-                        self.next_preset()
-                    elif key_event.keycode == 'KEY_ENTER':
-                        self.pause_resume_timer2()
-                    elif key_event.keycode == 'KEY_ESC':
-                        self.reset_timers()
-
-    def previous_preset(self):
-        self.current_preset_index = (self.current_preset_index - 1) % len(self.presets)
-        self.set_preset(*self.presets[self.current_preset_index])
-
-    def next_preset(self):
-        self.current_preset_index = (self.current_preset_index + 1) % len(self.presets)
-        self.set_preset(*self.presets[self.current_preset_index])
-
-    def pause_resume_timer2(self):
-        if not self.timer1_running and not self.timer2_running:
-            self.timer1_running = True
-            self.timer2_running = True
-            self.timer1_last_time = time()
-            self.timer2_last_time = time()
-        elif self.timer2_running:
-            self.timer2_paused = not self.timer2_paused
-            if not self.timer2_paused:
-                self.timer2_last_time = time()
 
     def set_preset(self, timer1_value, timer2_value, *args):
         self.countdown = args[0] if len(args) > 0 and isinstance(args[0], bool) else False
-        preset_name = args[1] if len(args) > 1 else ""
+        preset_name = args[1] if len(args) > 1 else args[0] if len(args) > 0 else ""
         self.preset_label.config(text=preset_name)
         if self.countdown:
             self.timer1_value = timer1_value
@@ -125,8 +91,6 @@ class DualTimerApp:
         self.timer2_paused = False
         self.timer1_value = 0
         self.timer2_value = 0
-        self.timer1_max_value = None
-        self.timer2_min_value = None
         self.update_timer1_display()
         self.update_timer2_display()
 
