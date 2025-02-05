@@ -60,7 +60,19 @@ class DualTimerApp:
             if device_name in device.name:
                 return InputDevice(path)
         return None
-
+    def read_input(self):
+        for event in self.device.read_loop():
+            if event.type == ecodes.EV_KEY:
+                key_event = categorize(event)
+                if key_event.keystate == key_event.key_down:
+                    if key_event.keycode == 'KEY_LEFT':
+                        self.previous_preset()
+                    elif key_event.keycode == 'KEY_RIGHT':
+                        self.next_preset()
+                    elif key_event.keycode == 'KEY_ENTER':
+                        self.pause_resume_timer2()
+                    elif key_event.keycode == 'KEY_ESC':
+                        self.reset_timers()
     def set_preset(self, timer1_value, timer2_value, *args):
         self.countdown = args[0] if len(args) > 0 and isinstance(args[0], bool) else False
         preset_name = args[1] if len(args) > 1 else args[0] if len(args) > 0 else ""
