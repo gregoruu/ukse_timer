@@ -32,10 +32,10 @@ class DualTimerApp:
         ]
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
-        self.label1 = tk.Label(root, text="00:00", font=("Arial", 200))
+        self.label1 = tk.Label(root, text="00:00", font=("Arial", 150))
         self.label1.pack(pady=20, padx=10)
         
-        self.label2 = tk.Label(root, text="00:00", font=("Arial", 200))
+        self.label2 = tk.Label(root, text="00:00", font=("Arial", 150))
         self.label2.pack(pady=20, padx=10)
         
         self.preset_label = tk.Label(root, text="", font=("Arial", 40), anchor="w")
