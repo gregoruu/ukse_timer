@@ -32,13 +32,13 @@ class DualTimerApp:
         ]
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
-        self.label1 = tk.Label(root, text="00:00", font=("Arial", 400))
+        self.label1 = tk.Label(root, text="00:00", font=("Arial", 96))
         self.label1.pack(pady=40, padx=20)
         
-        self.label2 = tk.Label(root, text="00:00", font=("Arial", 400))
+        self.label2 = tk.Label(root, text="00:00", font=("Arial", 96))
         self.label2.pack(pady=40, padx=20)
         
-        self.preset_label = tk.Label(root, text="", font=("Arial", 128), anchor="w")
+        self.preset_label = tk.Label(root, text="", font=("Arial", 48), anchor="w")
         self.preset_label.pack(fill="x", pady=20, padx=20)
         
         self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
@@ -112,11 +112,11 @@ class DualTimerApp:
 
     def update_timer1_display(self):
         minutes, seconds = divmod(int(self.timer1_value), 60)
-        self.label1.config(text=f"RC {minutes:02}:{seconds:02}")
+        self.label1.config(text=f"{minutes:02}:{seconds:02}")
 
     def update_timer2_display(self):
         minutes, seconds = divmod(int(self.timer2_value), 60)
-        self.label2.config(text=f"RC {minutes:02}:{seconds:02}")
+        self.label2.config(text=f"{minutes:02}:{seconds:02}")
 
     def reset_timers(self):
         self.timer1_running = False
