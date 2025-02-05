@@ -32,14 +32,14 @@ class DualTimerApp:
         ]
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
-        self.label1 = tk.Label(root, text="00:00", font=("Arial", 96))
-        self.label1.pack(pady=40, padx=20)
+        self.label1 = tk.Label(root, text="00:00", font=("Arial", 200))
+        self.label1.pack(pady=20, padx=10)
         
-        self.label2 = tk.Label(root, text="00:00", font=("Arial", 96))
-        self.label2.pack(pady=40, padx=20)
+        self.label2 = tk.Label(root, text="00:00", font=("Arial", 200))
+        self.label2.pack(pady=20, padx=10)
         
-        self.preset_label = tk.Label(root, text="", font=("Arial", 48), anchor="w")
-        self.preset_label.pack(fill="x", pady=20, padx=20)
+        self.preset_label = tk.Label(root, text="", font=("Arial", 40), anchor="w")
+        self.preset_label.pack(fill="x", pady=10, padx=10)
         
         self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
         self.timer2_thread = threading.Thread(target=self.run_timer2, daemon=True)
@@ -53,7 +53,7 @@ class DualTimerApp:
             self.input_thread = threading.Thread(target=self.read_input, daemon=True)
             self.input_thread.start()
 
-        self.set_preset(*self.presets[self.current_preset_index])
+        self.set_ppreset(*self.presets[self.current_preset_index])
 
     def find_device(self, device_name):
         for path in list_devices():
