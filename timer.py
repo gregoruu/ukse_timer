@@ -54,13 +54,18 @@ class DualTimerApp:
 
         self.set_preset(*self.presets[self.current_preset_index])
 
+        self.timer1_thread = threading.Thread(target=self.run_timer1, daemon=True)
+        self.timer2_thread = threading.Thread(target=self.run_timer2, daemon=True)
+        self.timer1_thread.start()
+        self.timer2_thread.start()
+
     def find_device(self, device_name):
         for path in list_devices():
             device = InputDevice(path)
             if device_name in device.name:
                 return InputDevice(path)
         return None
-
+    
     def read_input(self):
         for event in self.device.read_loop():
             if event.type == ecodes.EV_KEY:
@@ -75,10 +80,33 @@ class DualTimerApp:
                     elif key_event.keycode == 'KEY_ESC':
                         self.reset_timers()
 
+    def previous_preset(self):
+        self.current_preset_index = (self.current_preset_index - 1) % len(self.presets)
+        self.set_preset(*self.presets[self.current_preset_index])
+
+    def next_preset(self):
+        self.current_preset_index = (self.current_preset_index + 1) % len(self.presets)
+        self.set_preset(*self.presets[self.current_preset_index])
+
+    def pause_resume_timer2(self):
+        if not self.timer1_running and not self.timer2_running:
+            self.timer1_running = True
+            self.timer2_running = True
+            self.timer1_last_time = time()
+            self.timer2_last_time = time()
+        elif self.timer2_running:
+            self.timer2_paused = not self.timer2_paused
+            if not self.timer2_paused:
+                self.timer2_last_time = time()
+
     def set_preset(self, timer1_value, timer2_value, *args):
         self.countdown = args[0] if len(args) > 0 and isinstance(args[0], bool) else False
         preset_name = args[1] if len(args) > 1 else args[0] if len(args) > 0 else ""
         self.preset_label.config(text=preset_name)
+        self.timer1_running = False
+        self.timer2_running = False
+        self.timer1_paused = False
+        self.timer2_paused = False
         if self.countdown:
             self.timer1_value = timer1_value
             self.timer2_value = timer2_value
@@ -103,8 +131,13 @@ class DualTimerApp:
         self.timer2_running = False
         self.timer1_paused = False
         self.timer2_paused = False
-        self.timer1_value = 0
-        self.timer2_value = 0
+        preset = self.presets[self.current_preset_index]
+        if self.countdown:
+            self.timer1_value = preset[0]
+            self.timer2_value = preset[1]
+        else:
+            self.timer1_value = 0
+            self.timer2_value = 0
         self.update_timer1_display()
         self.update_timer2_display()
 
@@ -156,21 +189,8 @@ class DualTimerApp:
                 self.update_timer2_display()
             sleep(0.1)
 
-    def previous_preset(self):
-        self.current_preset_index = (self.current_preset_index - 1) % len(self.presets)
-        self.set_preset(*self.presets[self.current_preset_index])
-
-    def next_preset(self):
-        self.current_preset_index = (self.current_preset_index + 1) % len(self.presets)
-        self.set_preset(*self.presets[self.current_preset_index])
-
-    def pause_resume_timer2(self):
-        self.timer2_paused = not self.timer2_paused
-        if not self.timer2_paused:
-            self.run_timer2()
-
 if __name__ == "__main__":
     root = tk.Tk()
-    device_name = "000001 KbMouse"
+    device_name = "000001 KbMouse"  # AT Translated Set 2 keyboard
     app = DualTimerApp(root, device_name)
     root.mainloop()
