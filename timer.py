@@ -37,7 +37,7 @@ class DualTimerApp:
         self.container.pack(fill="both", expand=True)
 
         self.preset_label = tk.Label(self.container, text="", font=("Arial", 80), anchor="w")
-        self.preset_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
+        self.preset_label.grid(row=2, column=0, padx=20, pady=10, sticky="sw")
 
         self.label1 = tk.Label(self.container, text="00:00", font=("Arial", 300))
         self.label1.grid(row=0, column=1, padx=20, pady=10)
