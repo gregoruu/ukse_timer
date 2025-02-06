@@ -24,11 +24,11 @@ class DualTimerApp:
             (30*60, 10*60, "RC 4 UP"),
             (35*60, 15*60, "RC 5 UP"),
             (40*60, 20*60, "RC 6 UP"),
-            (15*60, 3*60, True, "RC 2 DOWN"),
-            (20*60, 5*60, True, "RC 3 DOWN"),
-            (30*60, 10*60, True, "RC 4 DOWN"),
-            (35*60, 15*60, True, "RC 5 DOWN"),
-            (40*60, 20*60, True, "RC 6 DOWN")
+            (15*60, 3*60, True, "RC 2"),
+            (20*60, 5*60, True, "RC 3"),
+            (30*60, 10*60, True, "RC 4"),
+            (35*60, 15*60, True, "RC 5"),
+            (40*60, 20*60, True, "RC 6")
         ]
         self.current_preset_index = 0
         self.root.attributes("-fullscreen", True)
