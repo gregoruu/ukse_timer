@@ -60,11 +60,7 @@ class DualTimerApp:
         self.timer2_thread.start()
 
     def find_device(self, device_name):
-        for path in list_devices():
-            device = InputDevice(path)
-            if device_name in device.name:
-                return InputDevice(path)
-        return None
+        return InputDevice(device_name)
     
     def read_input(self):
         for event in self.device.read_loop():
@@ -191,6 +187,6 @@ class DualTimerApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    device_name = "000001 KbMouse"  # AT Translated Set 2 keyboard
+    device_name = "/dev/input/event1"  # AT Translated Set 2 keyboard
     app = DualTimerApp(root, device_name)
     root.mainloop()
