@@ -46,10 +46,13 @@ class DualTimerApp:
         self.preset_label.grid(row=2, column=0, padx=20, pady=0, sticky="sw")
 
         self.label1 = tk.Label(self.container, text="00:00", font=("Arial", base_font_size))
-        self.label1.grid(row=0, column=1, padx=0, pady=0)
+        self.label1.grid(row=0, column=1, padx=0, pady=0, sticky="n")
 
         self.label2 = tk.Label(self.container, text="00:00", font=("Arial", base_font_size))
-        self.label2.grid(row=1, column=1, padx=0, pady=0)
+        self.label2.grid(row=1, column=1, padx=0, pady=0, sticky="n")
+
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_rowconfigure(1, weight=1)
 
         pygame.mixer.init()
 
