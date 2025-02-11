@@ -8,7 +8,14 @@ class DualTimerApp:
     def __init__(self, root, device_name):
         self.root = root
         self.root.title("Dual Timer")
-        
+        self.root.attributes("-fullscreen", True)
+
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+
+        base_font_size = int(screen_height * 0.25)  # % of screen height
+
         self.timer1_running = False
         self.timer2_running = False
         self.timer1_paused = False
@@ -31,7 +38,6 @@ class DualTimerApp:
             (50*60, 20*60, True, "RC 6")
         ]
         self.current_preset_index = 0
-        self.root.attributes("-fullscreen", True)
 
         self.container = tk.Frame(root)
         self.container.pack(fill="both", expand=True)
@@ -39,10 +45,10 @@ class DualTimerApp:
         self.preset_label = tk.Label(self.container, text="", font=("Arial", 40), anchor="w")
         self.preset_label.grid(row=2, column=0, padx=20, pady=0, sticky="sw")
 
-        self.label1 = tk.Label(self.container, text="00:00", font=("Arial", 340))
+        self.label1 = tk.Label(self.container, text="00:00", font=("Arial", base_font_size))
         self.label1.grid(row=0, column=1, padx=0, pady=0)
 
-        self.label2 = tk.Label(self.container, text="00:00", font=("Arial", 340))
+        self.label2 = tk.Label(self.container, text="00:00", font=("Arial", base_font_size))
         self.label2.grid(row=1, column=1, padx=0, pady=0)
 
         pygame.mixer.init()
