@@ -14,7 +14,7 @@ class DualTimerApp:
         screen_height = self.root.winfo_screenheight()
 
 
-        base_font_size = int(screen_height * 0.25)  # % of screen height
+        base_font_size = int(screen_height * 0.45)  # % of screen height
 
         self.timer1_running = False
         self.timer2_running = False
@@ -196,6 +196,6 @@ class DualTimerApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    device_name = "/dev/input/event1"  # AT Translated Set 2 keyboard
+    device_name = "/dev/input/event6"  # AT Translated Set 2 keyboard
     app = DualTimerApp(root, device_name)
     root.mainloop()
