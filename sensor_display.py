@@ -1,20 +1,29 @@
 import pygame
-import serial
 import time
 import sys
+import smbus2
 
 # --- Seaded ---
-PORT = "COM3"        # muuda vastavalt oma süsteemile (/dev/ttyUSB0 Linuxis)
-BAUD = 9600
-THRESHOLD = 1000     # läve väärtus
-COUNTDOWN = 10       # sekundites
+I2C_BUS = 1           # I²C bus (tavaliselt 1 Orange Pi 3 LTS)
+PTE7300_ADDR = 0x28   # PTE7300 I²C aadress, kontrolli datasheetist
+THRESHOLD = 1000      # läve väärtus
+COUNTDOWN = 10        # sekundites
 
-# --- Serial ühendus ---
+# --- I²C seadistus ---
 try:
-    ser = serial.Serial(PORT, BAUD, timeout=1)
+    bus = smbus2.SMBus(I2C_BUS)
 except Exception as e:
-    print("Ei saanud Serial porti avada:", e)
+    print("Ei saanud I²C bussi avada:", e)
     sys.exit(1)
+
+def read_pressure():
+    try:
+        data = bus.read_i2c_block_data(PTE7300_ADDR, 0, 2)  # 2 baiti lugemiseks
+        raw = (data[0] << 8) | data[1]
+        return raw
+    except Exception as e:
+        print("I²C error:", e)
+        return None
 
 # --- Pygame seaded ---
 pygame.init()
@@ -36,23 +45,16 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            ser.close()
+            bus.close()
             sys.exit()
 
     # --- Loe sensorit ---
-    try:
-        line = ser.readline().decode(errors="ignore").strip()
-    except Exception:
-        line = ""
+    sensor_value = read_pressure()
 
-    sensor_value = None
-    if line.isdigit():
-        sensor_value = int(line)
-
-        # Trigger loogika
-        if sensor_value > THRESHOLD and not countdown_active:
-            countdown_active = True
-            countdown_end = time.time() + COUNTDOWN
+    # Trigger loogika
+    if sensor_value is not None and sensor_value > THRESHOLD and not countdown_active:
+        countdown_active = True
+        countdown_end = time.time() + COUNTDOWN
 
     # --- Graafika ---
     screen.fill((30, 30, 30))  # taust
