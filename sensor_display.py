@@ -4,8 +4,8 @@ import sys
 import smbus2
 
 # --- Seaded ---
-I2C_BUS = 1           # I²C bus (tavaliselt 1 Orange Pi 3 LTS)
-PTE7300_ADDR = 0x28   # PTE7300 I²C aadress, kontrolli datasheetist
+I2C_BUS = 0           # I²C bus (tavaliselt 1 Orange Pi 3 LTS)
+PTE7300_ADDR = 0x6C   # PTE7300 I²C aadress, kontrolli datasheetist
 THRESHOLD = 1000      # läve väärtus
 COUNTDOWN = 10        # sekundites
 
